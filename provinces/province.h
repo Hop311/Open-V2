@@ -24,11 +24,7 @@ namespace province {
 	struct climate;
 	struct state_id;
 
-<<<<<<< HEAD
 	constexpr int32_t max_count = province::container_size;
-=======
-constexpr int32_t max_count = province::container_size;
->>>>>>> 3be6f86f33a7a43e1e232fc47dc23dbe8b396637
 
 	class alignas(64) container {
 		 int32_t size_used = 0;
