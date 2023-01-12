@@ -35,7 +35,11 @@ namespace state {
 	struct colonizers;
 	struct factories;
 
+<<<<<<< HEAD
 	constexpr int32_t max_count = 900;
+=======
+constexpr int32_t max_count = 900;
+>>>>>>> 3be6f86f33a7a43e1e232fc47dc23dbe8b396637
 
 	class alignas(64) container {
 		 int32_t size_used = 0;
