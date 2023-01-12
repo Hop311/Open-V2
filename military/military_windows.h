@@ -152,14 +152,7 @@ public:
 #endif
 				 std::visit(vhelper, *i);
 			 } else {
-				 if constexpr(ui::detail::can_create_dynamic<cb_item_base, world_state&, ui::tagged_gui_object, ui::element_tag, char const*, char const*>) {
-					 if(!cb_item_base::create_dynamic(ws, window, *i, rn_s, rn_e)) {
-						 std::visit([&ws, &window](auto tag) {
-							 if constexpr(!std::is_same_v<decltype(tag), std::monostate>)
-								 ui::create_dynamic_element(ws, tag, window);
-						 }, *i);
-					 }
-				 } else {
+				 if(!ui::detail::can_create_dynamic_s<cb_item_base, world_state&, ui::tagged_gui_object, ui::element_tag, char const*, char const*>::run(*this, ws, window, *i, rn_s, rn_e)) {
 					 std::visit([&ws, &window](auto tag) {
 						 if constexpr(!std::is_same_v<decltype(tag), std::monostate>)
 							 ui::create_dynamic_element(ws, tag, window);
@@ -402,14 +395,7 @@ public:
 #endif
 				 std::visit(vhelper, *i);
 			 } else {
-				 if constexpr(ui::detail::can_create_dynamic<fabricate_cb_window_base, world_state&, ui::tagged_gui_object, ui::element_tag, char const*, char const*>) {
-					 if(!fabricate_cb_window_base::create_dynamic(ws, window, *i, rn_s, rn_e)) {
-						 std::visit([&ws, &window](auto tag) {
-							 if constexpr(!std::is_same_v<decltype(tag), std::monostate>)
-								 ui::create_dynamic_element(ws, tag, window);
-						 }, *i);
-					 }
-				 } else {
+				 if(!ui::detail::can_create_dynamic_s<fabricate_cb_window_base, world_state&, ui::tagged_gui_object, ui::element_tag, char const*, char const*>::run(*this, ws, window, *i, rn_s, rn_e)) {
 					 std::visit([&ws, &window](auto tag) {
 						 if constexpr(!std::is_same_v<decltype(tag), std::monostate>)
 							 ui::create_dynamic_element(ws, tag, window);
