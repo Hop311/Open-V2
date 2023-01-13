@@ -215,14 +215,18 @@ auto fake_gobj_lookup() {
 	return[i = 0ui16](const char*, const char*) mutable { return ++i; };
 }
 
-int main(int , char **) {
-	
+#define VIC2_INSTALL_DIR u"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Victoria 2"
+#define MOD_DIR u"..\\..\\Open-V2\\mod\\OpenV2"
+#define SCENARIO_DIR u"."
+
+int main(int, char **) {
 
 	file_system fs;
-	fs.set_root(u"E:\\programs\\Victoria2");
-	fs.add_root(u"E:\\programs\\Victoria2\\mod\\OpenV2");
-	const char16_t* scenarioOutput = u"E:\\programs\\V2_scenario\\test_scenario.bin";
-	const char16_t* saveOutput = u"E:\\programs\\V2_scenario\\test_save_cmp.bin";
+
+	fs.set_root(VIC2_INSTALL_DIR);
+	fs.add_root(MOD_DIR);
+	const char16_t* scenarioOutput = SCENARIO_DIR u"\\test_scenario.bin";
+	const char16_t* saveOutput = SCENARIO_DIR u"\\test_save_cmp.bin";
 
 	//ui::gui_manager gui_m(850, 650);
 
