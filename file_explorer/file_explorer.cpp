@@ -217,6 +217,7 @@ auto fake_gobj_lookup() {
 
 #define VIC2_INSTALL_DIR u"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Victoria 2"
 #define MOD_DIR u"..\\..\\Open-V2\\mod\\OpenV2"
+// scenario folder will not be created, it must already exist
 #define SCENARIO_DIR u"."
 
 int main(int, char **) {

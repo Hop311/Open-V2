@@ -1,10 +1,10 @@
 
 @echo off
 
-set /p configuration=Choose "Debug" or "Release" (or leave blank for default "Release"): 
-if not defined configuration set configuration=Release
+set /p configuration=Choose "Debug" (default) or "Release": 
+if not defined configuration set configuration=Debug
 
-set args=/p:Configuration=%configuration% /m:2
+set args=/property:Configuration=%configuration% /maxCpuCount:2
 
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
 
