@@ -135,23 +135,23 @@ int wmain(int argc, wchar_t *argv[]) {
 		}
 		output += "\r\n";
 
-		for(int32_t i = 0; i < int32_t(keys_and_types.size()); ++i) {
-			if(keys_and_types[i].type == "bitfield" || keys_and_types[i].type == "bitfield_type") {
+		for(int32_t j = 0; j < int32_t(keys_and_types.size()); ++j) {
+			if(keys_and_types[j].type == "bitfield" || keys_and_types[j].type == "bitfield_type") {
 				std::string bytes_size = std::string("((uint32_t(") + container_size + " + 7)) / 8ui32 + 63ui32) & ~63ui32";
-				output += "\t\t struct alignas(64) dtype_" + std::to_string(i) + " { \r\n"
+				output += "\t\t struct alignas(64) dtype_" + std::to_string(j) + " { \r\n"
 					"\t\t\t bitfield_type padding[64]; \r\n"
 					"\t\t\t bitfield_type values[" + bytes_size + "]; \r\n"
-					"\t\t\t dtype_" + std::to_string(i) + "() { std::fill_n(values - 1, 1 + " + bytes_size + ", bitfield_type{ 0ui8 }); }\r\n"
-					"\t\t } m_" + std::to_string(i) + ";\r\n";
+					"\t\t\t dtype_" + std::to_string(j) + "() { std::fill_n(values - 1, 1 + " + bytes_size + ", bitfield_type{ 0ui8 }); }\r\n"
+					"\t\t } m_" + std::to_string(j) + ";\r\n";
 			} else {
-				std::string member_count = std::string("(sizeof(") + keys_and_types[i].type + ") <= 64 ? ("
-					"uint32_t(" + container_size + ") + (64ui32 / uint32_t(sizeof(" + keys_and_types[i].type + "))) - 1ui32) & ~(64ui32 / uint32_t(sizeof(" + keys_and_types[i].type + ")) - 1ui32"
+				std::string member_count = std::string("(sizeof(") + keys_and_types[j].type + ") <= 64 ? ("
+					"uint32_t(" + container_size + ") + (64ui32 / uint32_t(sizeof(" + keys_and_types[j].type + "))) - 1ui32) & ~(64ui32 / uint32_t(sizeof(" + keys_and_types[j].type + ")) - 1ui32"
 					") : uint32_t(" + container_size + "))";
-				output += "\t\t struct alignas(64) dtype_" + std::to_string(i) + " { \r\n"
-					"\t\t\t uint8_t padding[(sizeof(" + keys_and_types[i].type + ") + 63ui32) & ~63ui32]; \r\n"
-					"\t\t\t " + keys_and_types[i].type + " values[" + member_count + "]; \r\n"
-					"\t\t\t dtype_" + std::to_string(i) + "() { std::uninitialized_value_construct_n(values - 1, " + member_count + " + 1); }\r\n"
-					"\t\t } m_" + std::to_string(i) + ";\r\n";
+				output += "\t\t struct alignas(64) dtype_" + std::to_string(j) + " { \r\n"
+					"\t\t\t uint8_t padding[(sizeof(" + keys_and_types[j].type + ") + 63ui32) & ~63ui32]; \r\n"
+					"\t\t\t " + keys_and_types[j].type + " values[" + member_count + "]; \r\n"
+					"\t\t\t dtype_" + std::to_string(j) + "() { std::uninitialized_value_construct_n(values - 1, " + member_count + " + 1); }\r\n"
+					"\t\t } m_" + std::to_string(j) + ";\r\n";
 			}
 		}
 		output += "\r\n";
@@ -171,57 +171,57 @@ int wmain(int argc, wchar_t *argv[]) {
 		}
 
 		// tagged member functions
-		for(int32_t i = 0; i < int32_t(keys_and_types.size()); ++i) {
-			if(keys_and_types[i].type == "bitfield" || keys_and_types[i].type == "bitfield_type") {
+		for(int32_t j = 0; j < int32_t(keys_and_types.size()); ++j) {
+			if(keys_and_types[j].type == "bitfield" || keys_and_types[j].type == "bitfield_type") {
 				// get
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, bool> get(" + index_type + " i) const {\r\n"
-					"\t\t\t return bit_vector_test(m_" + std::to_string(i) + ".values, to_index(i));\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, bool> get(" + index_type + " i) const {\r\n"
+					"\t\t\t return bit_vector_test(m_" + std::to_string(j) + ".values, to_index(i));\r\n"
 					"\t\t }\r\n";
 				// set
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t auto set(" + index_type + " i, bool v) -> std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">> {\r\n"
-					"\t\t\t bit_vector_set(m_" + std::to_string(i) + ".values, to_index(i), v);\r\n"
+					"\t\t auto set(" + index_type + " i, bool v) -> std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">> {\r\n"
+					"\t\t\t bit_vector_set(m_" + std::to_string(j) + ".values, to_index(i), v);\r\n"
 					"\t\t }\r\n";
 				// get row
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, tagged_array_view<bitfield_type, " + index_type + ">> get_row() {\r\n"
-					"\t\t\t return tagged_array_view<bitfield_type, " + index_type + ">(m_" + std::to_string(i) + ".values, int32_t(uint32_t(size_used + 7) / 8ui32));\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, tagged_array_view<bitfield_type, " + index_type + ">> get_row() {\r\n"
+					"\t\t\t return tagged_array_view<bitfield_type, " + index_type + ">(m_" + std::to_string(j) + ".values, int32_t(uint32_t(size_used + 7) / 8ui32));\r\n"
 					"\t\t }\r\n";
 				// const get row
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, tagged_array_view<bitfield_type const, " + index_type + ">> get_row() const {\r\n"
-					"\t\t\t return tagged_array_view<bitfield_type const, " + index_type + ">(m_" + std::to_string(i) + ".values, int32_t(uint32_t(size_used + 7) / 8ui32));\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, tagged_array_view<bitfield_type const, " + index_type + ">> get_row() const {\r\n"
+					"\t\t\t return tagged_array_view<bitfield_type const, " + index_type + ">(m_" + std::to_string(j) + ".values, int32_t(uint32_t(size_used + 7) / 8ui32));\r\n"
 					"\t\t }\r\n";
 			} else {
 				// get
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, " + keys_and_types[i].type + "&> get(" + index_type + " i) {\r\n"
-					"\t\t\t return m_" + std::to_string(i) + ".values[to_index(i)];\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, " + keys_and_types[j].type + "&> get(" + index_type + " i) {\r\n"
+					"\t\t\t return m_" + std::to_string(j) + ".values[to_index(i)];\r\n"
 					"\t\t }\r\n";
 				// const get
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, " + keys_and_types[i].type + " const&> get(" + index_type + " i) const {\r\n"
-					"\t\t\t return m_" + std::to_string(i) + ".values[to_index(i)];\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, " + keys_and_types[j].type + " const&> get(" + index_type + " i) const {\r\n"
+					"\t\t\t return m_" + std::to_string(j) + ".values[to_index(i)];\r\n"
 					"\t\t }\r\n";
 				// set
 				output += std::string("\t\t template<typename INDEX, typename value_type>\r\n") +
-					"\t\t auto set(" + index_type + " i, value_type v) -> std::enable_if_t<std::is_trivially_copyable_v<value_type> && std::is_same_v<INDEX, " + keys_and_types[i].key + ">> {\r\n"
-					"\t\t\t m_" + std::to_string(i) + ".values[to_index(i)] = v;\r\n"
+					"\t\t auto set(" + index_type + " i, value_type v) -> std::enable_if_t<std::is_trivially_copyable_v<value_type> && std::is_same_v<INDEX, " + keys_and_types[j].key + ">> {\r\n"
+					"\t\t\t m_" + std::to_string(j) + ".values[to_index(i)] = v;\r\n"
 					"\t\t }\r\n";
 				output += std::string("\t\t template<typename INDEX, typename value_type>\r\n") +
-					"\t\t auto set(" + index_type + " i, value_type const& v) -> std::enable_if_t<!std::is_trivially_copyable_v<value_type> && std::is_same_v<INDEX, " + keys_and_types[i].key + ">> {\r\n"
-					"\t\t\t m_" + std::to_string(i) + ".values[to_index(i)] = v;\r\n"
+					"\t\t auto set(" + index_type + " i, value_type const& v) -> std::enable_if_t<!std::is_trivially_copyable_v<value_type> && std::is_same_v<INDEX, " + keys_and_types[j].key + ">> {\r\n"
+					"\t\t\t m_" + std::to_string(j) + ".values[to_index(i)] = v;\r\n"
 					"\t\t }\r\n";
 				// get row
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, tagged_array_view<" + keys_and_types[i].type + ", " + index_type + ">> get_row() {\r\n"
-					"\t\t\t return tagged_array_view<" + keys_and_types[i].type + ", " + index_type + ">(m_" + std::to_string(i) + ".values, ve::to_vector_size(uint32_t(size_used)));\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, tagged_array_view<" + keys_and_types[j].type + ", " + index_type + ">> get_row() {\r\n"
+					"\t\t\t return tagged_array_view<" + keys_and_types[j].type + ", " + index_type + ">(m_" + std::to_string(j) + ".values, ve::to_vector_size(uint32_t(size_used)));\r\n"
 					"\t\t }\r\n";
 				// const get row
 				output += std::string("\t\t template<typename INDEX>\r\n") +
-					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[i].key + ">, tagged_array_view<" + keys_and_types[i].type + " const, " + index_type + ">> get_row() const {\r\n"
-					"\t\t\t return tagged_array_view<" + keys_and_types[i].type + " const, " + index_type + ">(m_" + std::to_string(i) + ".values, ve::to_vector_size(uint32_t(size_used)));\r\n"
+					"\t\t std::enable_if_t<std::is_same_v<INDEX, " + keys_and_types[j].key + ">, tagged_array_view<" + keys_and_types[j].type + " const, " + index_type + ">> get_row() const {\r\n"
+					"\t\t\t return tagged_array_view<" + keys_and_types[j].type + " const, " + index_type + ">(m_" + std::to_string(j) + ".values, ve::to_vector_size(uint32_t(size_used)));\r\n"
 					"\t\t }\r\n";
 			}
 		}
@@ -250,11 +250,11 @@ int wmain(int argc, wchar_t *argv[]) {
 
 			// release
 			output += std::string("\t\t void release(") + index_type + " i) {\r\n";
-			for(int32_t i = 0; i < int32_t(keys_and_types.size()); ++i) {
-				if(keys_and_types[i].type == "bitfield" || keys_and_types[i].type == "bitfield_type") {
-					output += "\t\t\t set<" + keys_and_types[i].key + ">(i, false);\r\n";
+			for(int32_t j = 0; j < int32_t(keys_and_types.size()); ++j) {
+				if(keys_and_types[j].type == "bitfield" || keys_and_types[j].type == "bitfield_type") {
+					output += "\t\t\t set<" + keys_and_types[j].key + ">(i, false);\r\n";
 				} else {
-					output += "\t\t\t set<" + keys_and_types[i].key + ">(i, " + keys_and_types[i].type + "());\r\n";
+					output += "\t\t\t set<" + keys_and_types[j].key + ">(i, " + keys_and_types[j].type + "());\r\n";
 				}
 			}
 			output += "\t\t\t m_index.values[to_index(i)] = first_free;\r\n"; // FN
@@ -383,24 +383,24 @@ int wmain(int argc, wchar_t *argv[]) {
 			output += "\t\t }\r\n";
 		}
 
-		for(int32_t i = 0; i < int32_t(keys_and_types.size()); ++i) {
-			if(keys_and_types[i].type == "bitfield" || keys_and_types[i].type == "bitfield_type") {
-				output += std::string("\t\t serialization::serialize_array(output, obj.m_") + std::to_string(i) + ".values, uint32_t(obj.size_used + 7) / 8ui32);\r\n";
+		for(int32_t j = 0; j < int32_t(keys_and_types.size()); ++j) {
+			if(keys_and_types[j].type == "bitfield" || keys_and_types[j].type == "bitfield_type") {
+				output += std::string("\t\t serialization::serialize_array(output, obj.m_") + std::to_string(j) + ".values, uint32_t(obj.size_used + 7) / 8ui32);\r\n";
 			} else {
-				output += "\t\tif constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_static_size) {\r\n";
-				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::size() == 0) {\r\n";
-				output += "\t\t\t } else if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_simple_serialize) {\r\n";
-				output += "\t\t\t\t serialization::serialize_array(output, obj.m_" + std::to_string(i) + ".values, obj.size_used);\r\n";
+				output += "\t\tif constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_static_size) {\r\n";
+				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::size() == 0) {\r\n";
+				output += "\t\t\t } else if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_simple_serialize) {\r\n";
+				output += "\t\t\t\t serialization::serialize_array(output, obj.m_" + std::to_string(j) + ".values, obj.size_used);\r\n";
 				output += "\t\t\t } else {\r\n";
 				output += "\t\t\t\t for(int32_t i = 0; i < obj.size_used; ++i)\r\n";
-				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::serialize_object(output, obj.m_" + std::to_string(i) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
+				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::serialize_object(output, obj.m_" + std::to_string(j) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
 				output += "\t\t\t }\r\n";
 				output += "\t\t} else {\r\n";
-				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_simple_serialize) {\r\n";
-				output += "\t\t\t\t serialization::serialize_array(output, obj.m_" + std::to_string(i) + ".values, obj.size_used);\r\n";
+				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_simple_serialize) {\r\n";
+				output += "\t\t\t\t serialization::serialize_array(output, obj.m_" + std::to_string(j) + ".values, obj.size_used);\r\n";
 				output += "\t\t\t } else {\r\n";
 				output += "\t\t\t\t for(int32_t i = 0; i < obj.size_used; ++i)\r\n";
-				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::serialize_object(output, obj.m_" + std::to_string(i) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
+				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::serialize_object(output, obj.m_" + std::to_string(j) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
 				output += "\t\t\t }\r\n";
 				output += "\t\t}\r\n";
 			}
@@ -431,24 +431,24 @@ int wmain(int argc, wchar_t *argv[]) {
 			output += "\t\t}\r\n";
 		}
 
-		for(int32_t i = 0; i < int32_t(keys_and_types.size()); ++i) {
-			if(keys_and_types[i].type == "bitfield" || keys_and_types[i].type == "bitfield_type") {
-				output += std::string("\t\t serialization::deserialize_array(input, obj.m_") + std::to_string(i) + ".values, uint32_t(obj.size_used + 7) / 8ui32);\r\n";
+		for(int32_t j = 0; j < int32_t(keys_and_types.size()); ++j) {
+			if(keys_and_types[j].type == "bitfield" || keys_and_types[j].type == "bitfield_type") {
+				output += std::string("\t\t serialization::deserialize_array(input, obj.m_") + std::to_string(j) + ".values, uint32_t(obj.size_used + 7) / 8ui32);\r\n";
 			} else {
-				output += "\t\tif constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_static_size) {\r\n";
-				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::size() == 0) {\r\n";
-				output += "\t\t\t } else if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_simple_serialize) {\r\n";
-				output += "\t\t\t\t serialization::deserialize_array(input, obj.m_" + std::to_string(i) + ".values, obj.size_used);\r\n";
+				output += "\t\tif constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_static_size) {\r\n";
+				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::size() == 0) {\r\n";
+				output += "\t\t\t } else if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_simple_serialize) {\r\n";
+				output += "\t\t\t\t serialization::deserialize_array(input, obj.m_" + std::to_string(j) + ".values, obj.size_used);\r\n";
 				output += "\t\t\t } else {\r\n";
 				output += "\t\t\t\t for(int32_t i = 0; i < obj.size_used; ++i)\r\n";
-				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::deserialize_object(input, obj.m_" + std::to_string(i) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
+				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::deserialize_object(input, obj.m_" + std::to_string(j) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
 				output += "\t\t\t }\r\n";
 				output += "\t\t} else {\r\n";
-				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_simple_serialize) {\r\n";
-				output += "\t\t\t\t serialization::deserialize_array(input, obj.m_" + std::to_string(i) + ".values, obj.size_used);\r\n";
+				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_simple_serialize) {\r\n";
+				output += "\t\t\t\t serialization::deserialize_array(input, obj.m_" + std::to_string(j) + ".values, obj.size_used);\r\n";
 				output += "\t\t\t } else {\r\n";
 				output += "\t\t\t\t for(int32_t i = 0; i < obj.size_used; ++i)\r\n";
-				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::deserialize_object(input, obj.m_" + std::to_string(i) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
+				output += "\t\t\t\t\t serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::deserialize_object(input, obj.m_" + std::to_string(j) + ".values[i], std::forward<CONTEXT>(c)...);\r\n";
 				output += "\t\t\t }\r\n";
 				output += "\t\t}\r\n";
 
@@ -465,20 +465,20 @@ int wmain(int argc, wchar_t *argv[]) {
 			output += std::string("+ sizeof(") + index_type + ") * obj.size_used";
 		}
 
-		for(int32_t i = 0; i < int32_t(keys_and_types.size()); ++i) {
-			if(keys_and_types[i].type == "bitfield" || keys_and_types[i].type == "bitfield_type") {
+		for(int32_t j = 0; j < int32_t(keys_and_types.size()); ++j) {
+			if(keys_and_types[j].type == "bitfield" || keys_and_types[j].type == "bitfield_type") {
 				output += "+ sizeof(bitfield_type) * (uint32_t(obj.size_used + 7) / 8ui32)";
 			} else {
 				output += "+ [&, max = obj.size_used](){\r\n";
 				output += "\t\t\t if(max == 0)\r\n";
 				output += "\t\t\t\t return size_t(0);\r\n";
-				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_static_size) {\r\n";
-				output += "\t\t\t\t return size_t(max  * serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::size());\r\n";
-				output += "\t\t\t } else if constexpr(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::has_simple_serialize) {\r\n";
-				output += "\t\t\t\t return size_t(serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::size(obj.m_" + std::to_string(i) + ".values[0], std::forward<CONTEXT>(c)...) * max); \r\n";
+				output += "\t\t\t if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_static_size) {\r\n";
+				output += "\t\t\t\t return size_t(max  * serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::size());\r\n";
+				output += "\t\t\t } else if constexpr(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::has_simple_serialize) {\r\n";
+				output += "\t\t\t\t return size_t(serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::size(obj.m_" + std::to_string(j) + ".values[0], std::forward<CONTEXT>(c)...) * max); \r\n";
 				output += "\t\t\t } else {\r\n";
-				output += "\t\t\t\t return size_t(std::transform_reduce(obj.m_" + std::to_string(i) + ".values, obj.m_" + std::to_string(i) + ".values + max, 0ui64, std::plus<>(), [&](" + keys_and_types[i].type + " const& m) {\r\n";
-				output += "\t\t\t\t\t return serialization::tagged_serializer<" + keys_and_types[i].key + ", " + keys_and_types[i].type + ">::size(m, std::forward<CONTEXT>(c)...); \r\n";
+				output += "\t\t\t\t return size_t(std::transform_reduce(obj.m_" + std::to_string(j) + ".values, obj.m_" + std::to_string(j) + ".values + max, 0ui64, std::plus<>(), [&](" + keys_and_types[j].type + " const& m) {\r\n";
+				output += "\t\t\t\t\t return serialization::tagged_serializer<" + keys_and_types[j].key + ", " + keys_and_types[j].type + ">::size(m, std::forward<CONTEXT>(c)...); \r\n";
 				output += "\t\t\t\t })); \r\n";
 				output += "\t\t\t }\r\n";
 				output += "\t\t }()\r\n";

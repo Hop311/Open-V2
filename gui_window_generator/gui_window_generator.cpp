@@ -152,8 +152,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -171,8 +171,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						output += "\t void on_select(world_state& ws, uint32_t i);\r\n";
@@ -187,8 +187,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						|| win.base == "ui::fixed_region") {
 						output += "class " + win.name + " : public " + win.base + " {\r\n";
 						output += "public:\r\n";
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('c') != std::string::npos) {
@@ -213,8 +213,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -243,8 +243,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -273,8 +273,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -303,8 +303,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -340,8 +340,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -374,8 +374,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -408,8 +408,8 @@ int wmain(int argc, wchar_t *argv[]) {
 						output += "class " + win.name + " {\r\n";
 						output += "public:\r\n";
 
-						for(auto& i : win.members)
-							output += "\t " + i.type + " " + i.name + ";\r\n";
+						for(auto& j : win.members)
+							output += "\t " + j.type + " " + j.name + ";\r\n";
 						output += "\r\n";
 
 						if(win.options.find('w') != std::string::npos) {
@@ -436,20 +436,20 @@ int wmain(int argc, wchar_t *argv[]) {
 					output += "class " + win.name + "_internal_class" + " : public " + win.base + " {\r\n";
 					output += "public:\r\n";
 
-					for(auto& i : win.members) {
-						output += "\t " + i.type + " " + i.name + ";\r\n";
+					for(auto& j : win.members) {
+						output += "\t " + j.type + " " + j.name + ";\r\n";
 					}
 					output += "\t ui::gui_object_tag window_object;\r\n";
 					output += "\r\n";
 
-					for(auto& i : win.members) {
+					for(auto& j : win.members) {
 						output += "\t template<typename index>\r\n";
-						output += "\t std::enable_if_t<std::is_same_v<CT_STRING(\"" + i.name + "\"),index > ," + i.type + "&> get() {\r\n";
-						output += "\t\t return " + i.name + ";\r\n";
+						output += "\t std::enable_if_t<std::is_same_v<CT_STRING(\"" + j.name + "\"),index > ," + j.type + "&> get() {\r\n";
+						output += "\t\t return " + j.name + ";\r\n";
 						output += "\t }\r\n";
 						output += "\t template<typename index>\r\n";
-						output += "\t std::enable_if_t<std::is_same_v<CT_STRING(\"" + i.name + "\"),index > ," + i.type + " const&> get() const {\r\n";
-						output += "\t\t return " + i.name + ";\r\n";
+						output += "\t std::enable_if_t<std::is_same_v<CT_STRING(\"" + j.name + "\"),index > ," + j.type + " const&> get() const {\r\n";
+						output += "\t\t return " + j.name + ";\r\n";
 						output += "\t }\r\n";
 					}
 
@@ -465,9 +465,9 @@ int wmain(int argc, wchar_t *argv[]) {
 					output += "\t\t if constexpr(ui::detail::has_update<" + win.base + ", world_state&>) \r\n";
 					output += "\t\t\t " + win.base + "::update(ws);\r\n";
 
-					for(auto& i : win.members) {
-						output += "\t\t if constexpr(ui::detail::has_windowed_update<" + i.type + ", " + win.name + "_internal_class" + "&, world_state&>) \r\n";
-						output += "\t\t\t " + i.name + ".windowed_update(*this, ws);\r\n";
+					for(auto& j : win.members) {
+						output += "\t\t if constexpr(ui::detail::has_windowed_update<" + j.type + ", " + win.name + "_internal_class" + "&, world_state&>) \r\n";
+						output += "\t\t\t " + j.name + ".windowed_update(*this, ws);\r\n";
 					}
 
 					output += "\t }\r\n";
@@ -496,17 +496,17 @@ int wmain(int argc, wchar_t *argv[]) {
 					output += "\t\t\t const char* rn_e = rn_s + rn.length();\r\n";
 
 					bool first = true;
-					for(auto &i : win.members) {
+					for(auto &j : win.members) {
 						if(first) {
 							first = false;
-							output += "\t\t\t if(compile_time_str_compare_ci<CT_STRING(\"" + i.name + "\")>(rn_s, rn_e) == 0) {\r\n";
+							output += "\t\t\t if(compile_time_str_compare_ci<CT_STRING(\"" + j.name + "\")>(rn_s, rn_e) == 0) {\r\n";
 						} else {
-							output += "\t\t\t } else if(compile_time_str_compare_ci<CT_STRING(\"" + i.name + "\")>(rn_s, rn_e) == 0) {\r\n";
+							output += "\t\t\t } else if(compile_time_str_compare_ci<CT_STRING(\"" + j.name + "\")>(rn_s, rn_e) == 0) {\r\n";
 						}
 						output += "#ifdef _DEBUG\r\n";
-						output += "\t\t\t\t ui::detail::visitor_helper<" + i.type + "> vhelper(" + i.name + ", window, ws, rn_s, rn_e);\r\n";
+						output += "\t\t\t\t ui::detail::visitor_helper<" + j.type + "> vhelper(" + j.name + ", window, ws, rn_s, rn_e);\r\n";
 						output += "#else\r\n";
-						output += "\t\t\t\t ui::detail::visitor_helper<" + i.type + "> vhelper(" + i.name + ", window, ws);\r\n";
+						output += "\t\t\t\t ui::detail::visitor_helper<" + j.type + "> vhelper(" + j.name + ", window, ws);\r\n";
 						output += "#endif\r\n";
 						output += "\t\t\t\t std::visit(vhelper, *i);\r\n";
 					}
@@ -534,9 +534,9 @@ int wmain(int argc, wchar_t *argv[]) {
 
 					output += "\t\t }\r\n";
 					output += "\t\t window_object = window.id;\r\n";
-					for(auto &i : win.members) {
-						output += "\t\t if constexpr(ui::detail::has_initialize_in_window<" + i.type + ", " + win.name + "_internal_class&, world_state&>)\r\n";
-						output += "\t\t\t " + i.name + ".initialize_in_window(*this, ws);\r\n";
+					for(auto &j : win.members) {
+						output += "\t\t if constexpr(ui::detail::has_initialize_in_window<" + j.type + ", " + win.name + "_internal_class&, world_state&>)\r\n";
+						output += "\t\t\t " + j.name + ".initialize_in_window(*this, ws);\r\n";
 					}
 					output += "\t\t return window;\r\n";
 					output += "\t }\r\n";
